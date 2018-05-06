@@ -15,7 +15,7 @@ length(dummies)
 
 
 length(air_time)
-month = rep(1:12,36)
+#month = rep(1:12,36)
 
 month
 
