@@ -165,6 +165,7 @@ summary(reg3)
 We can see that from table above that both trend and seasonal components are significant,
 except month August. Adjusted R^2 shows good fit = 0.9679. Let's perform residual diagnostics.
 
+#3d)
 ```{r}
 plot(reg3)
 shapiro.test(reg3$residuals)
@@ -182,18 +183,38 @@ acf(reg3$residuals)
 ACF shows that our fitted model is not good. The process does not look like a white 
 noise. We Still have problem with stationarity.
 
+3e)
+
 ```{r}
-library(forecast)
-(lambda = BoxCox.lambda(milk_time))
-BC=BoxCox(milk_time, lambda)
-acf2(diff(BC))
+summary(reg3)
+```
+
+
+```{r}
+#time(milk_time)
+```
+
+
+```{r}
+
+pred3 = c(fitted(reg3), 6.596+0.028*c(1976.000, 1976.083, 1976.167, 1976.250, 1976.333, 1976.417, 1976.500, 1976.583, 1976.667, 1976.750, 1976.833, 1976.917) + c(0, -0.555, 0.071, 0.09, 0.164, 0.13, 0.07, 0, -0.048, -0.043, -0.087, 0.034))
+plot( c(time(milk_time), 1976.000, 1976.083, 1976.167, 1976.250, 1976.333, 1976.417, 1976.500, 1976.583, 1976.667, 1976.750, 1976.833, 1976.917), pred3, type='l', main="1 Year Prediction for Milk Production Data")
+points(milk_time, type='o', col='red')
+#pred3
 ```
 
 ```{r}
-
+month3  = rep(1:12, 14)
+dummies3 = table(1:length(month3), as.factor(month3))
 ```
 
 ```{r}
-autoplot(BoxCox(milk_time,0.7847705))
+reg03 = lm(milk_time~time(milk_time)+dummies3[,1:11])
+summary(reg03)
+```
+
+```{r}
+reg_3 = lm(milk_time~time(milk_time)+dummies3[,c(1:8, 11)])
+summary(reg_3)
 ```
 
