@@ -225,16 +225,69 @@ points(milk_time, type='o', col='red')
 pred3
 ```
 
+```{r}
+#attach(faithful)     # attach the data frame 
+eruption.lm = lm(eruptions ~ waiting)
+summary(eruption.lm)
+newdata = data.frame(waiting=80)
+pr=predict(eruption.lm, newdata, se.fit=TRUE, interval="predict") 
+```
 
 ```{r}
-plot(time(milk_time), fitted(reg_3), col='red', type='l')
-lines(milk_time)
+pr
+se.PI=sqrt(pr$se.fit^2 + pr$residual.scale^2)
+se.PI
+alpha <- 1.968789
+PI <- pr$fit + c(alpha, -alpha) * se.PI
+PI
+```
+
+ 
+```{r}
+(qt(0.975, 270)*0.4965 + 4.17622)
+```
+```{r}
+qt((1-0.95)/2, 270, lower.tail = FALSE)
+```
+
+```{r}
+se.PI=sqrt(pr$se.fit^2 + pr$residual.scale^2)
+se.PI
+#alpha <- 1.968789
+alpha=qt((1-0.95)/2, df = pr$df)
+PI <- 4.17622 + c(alpha, -alpha) * se.PI
+PI
 ```
 
 
 ```{r}
-reg_3 = lm(milk_time~time(milk_time)+dummies3[,c(3:7)])
-summary(reg_3)
+pi3 = lm(milk_time~time(milk_time))
+summary(pi3)
+tm=time(milk_time)
+t = data.frame(tm=1976.917)
+pr=predict(pi3, t, se.fit=TRUE, interval="predict")                
+```
+
+```{r}
+pr=predict(pi3, t, se.fit=TRUE, interval="predict")
+```
+
+
+```{r}
+#forecast(pi3, 12)
+#plot(forecast(pi3, 12))
+```
+
+
+```{r}
+#plot(time(milk_time), fitted(reg_3), col='red', type='l')
+#lines(milk_time)
+```
+
+
+```{r}
+#reg_3 = lm(milk_time~time(milk_time)+dummies3[,c(3:7)])
+#summary(reg_3)
 ```
 
 ```{r}
@@ -245,9 +298,9 @@ summary(reg_3)
 
 
 ```{r}
-pred3 = c(fitted(reg_3), -39930+20.64*c(1976.000, 1976.083, 1976.167, 1976.250, 1976.333, 1976.417, 1976.500, 1976.583, 1976.667, 1976.750, 1976.833, 1976.917) + c(0, 0, 79.09, 93.94, 154.9, 126.6, 76.78, 0, 0, 0, 0, 0))
-plot( c(time(milk_time), 1976.000, 1976.083, 1976.167, 1976.250, 1976.333, 1976.417, 1976.500, 1976.583, 1976.667, 1976.750, 1976.833, 1976.917), pred3, type='l', ylim = c(500, 1000))
-points(milk_time, type='o', col='red')
-pred3
+#pred3 = c(fitted(reg_3), -39930+20.64*c(1976.000, 1976.083, 1976.167, 1976.250, 1976.333, 1976.417, 1976.500, 1976.583, 1976.667, 1976.750, 1976.833, 1976.917) + c(0, 0, 79.09, 93.94, 154.9, 126.6, 76.78, 0, 0, 0, 0, 0))
+#plot( c(time(milk_time), 1976.000, 1976.083, 1976.167, 1976.250, 1976.333, 1976.417, 1976.500, 1976.583, 1976.667, 1976.750, 1976.833, 1976.917), pred3, type='l', ylim = c(500, 1000))
+#points(milk_time, type='o', col='red')
+#pred3
 ```
 
