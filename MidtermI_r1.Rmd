@@ -1,0 +1,149 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+```{r}
+rm(list = ls())
+air_m=read.csv("C:\\Users\\Azamat\\Downloads\\monthly-us-air-passenger-miles.csv")
+#plot air time series data
+plot.ts(air_m$air.passenger.miles)
+#make monthly time series data from Jan 1960 to DEc 1977
+air_time=ts(data=air_m$air.passenger.miles, frequency=12, start=c(1960, 1))
+length(air_time)
+
+length(air_m$air.passenger.miles)
+```
+
+```{r}
+length(air_time)
+month = rep(1:12,18)
+```
+
+```{r}
+fit = lm(air_time~time(air_time) + factor(month))
+summary(fit)
+```
+
+```{r}
+fac=factor(month)
+fac
+```
+
+```{r}
+dummies = table(1:length(month), as.factor(month))
+mod=(lm(air_time~0+time(air_time) + dummies[,1:11]))
+summary(mod)
+acf(mod$res)
+pacf(mod$res)
+```
+
+```{r}
+mod1=(lm(air_time~time(air_time) + dummies[,c(2,6:8,11)]))
+summary(mod1)
+acf(resid(mod1))
+pacf(resid(mod1))
+```
+
+```{r}
+pred = c(fitted(mod1), -1769+0.9023*c(1978.01, 1978.02, 1978.03, 1978.04, 1978.05, 1978.06, 1978.07, 1978.08, 1978.09, 1978.10, 1978.11, 1978.12) + c(0, -0.954, 0, 0, 0, 1.119, 1.449, 1.952, 0, 0, -1.031, 0))
+plot( c(time(air_time), 1978.000, 1978.083, 1978.167, 1978.250, 1978.333, 1978.417, 1978.500, 1978.583, 1978.667, 1978.750, 1978.833, 1978.917), pred, type='l', main="1 Year Prediction and Air Passengers Data")
+points(air_time, type='o', col='red')
+pred
+```
+
+```{r}
+mod1=lm(air_time~0 + time(air_time))
+summary(mod1)
+mod1$coefficients
+```
+
+```{r}
+#mod2 = lm(air_time ~ time(air_time))
+#predict(mod2, data.frame(pred), interval="prediction")
+```
+
+```{r}
+#pred
+```
+
+```{r}
+summary(mod1)
+rs<-rstandard(mod1)
+fits<-fitted.values(mod1)
+```
+
+```{r}
+qqnorm(rs)
+qqline(rs,col=2)
+shapiro.test(rs)
+```
+
+Normality assumptions is not met either. P value=0.002
+
+```{r}
+#install.packages("car")
+library(car)
+```
+
+```{r}
+plot(fits,rs,main="residuals vs. fitted values")
+```
+
+Equal variance is not seems reasonable. Obviuously we can see pattern in plot residuals vs fitted values plot
+
+```{r}
+par(mfrow = c(2, 2), oma = c(0, 0, 2, 0))
+plot(mod1)
+```
+
+```{r}
+milk=read.csv("C:\\Users\\Azamat\\Downloads\\milk.csv")
+milk_time=ts(data=milk$Prod, frequency=12, start=c(1962, 1))
+plot(milk_time)
+```
+
+No, it does not the series appear stationary? We can see fluctiations across the time.
+Does a transformation appear necessary for this data (if so, state a transfromation that
+could be used). Discuss any other relavent feaures of the plot.
+So We need stabilize variability. tHE other problem we can see the trend in plot so need
+detrend these data. Taking log of data stabilize variability, whereas differencing
+detrend these time series data.
+
+```{r}
+library(astsa)
+acf2(milk_time, max.lag = 167)
+```
+
+The plots ACF and PACF that show above confirm variability of data. We can also see
+the cycle that equals 1 year.
+
+```{r}
+diff=diff(log(milk_time))
+plot(diff)
+acf2(diff)
+```
+
+We are going to take log of data to stabilize variability and difference data to eliminate
+trend. The plot of differencing of log of data looks nicer, but we still have problem
+with stationarity as it is shown in ACF plot of transformed data. Anyway let's 
+to apply time series regression for the transformed data.
+
+```{r}
+
+```
+
