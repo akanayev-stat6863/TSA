@@ -144,6 +144,11 @@ with stationarity as it is shown in ACF plot of transformed data. Anyway let's
 to apply time series regression for the transformed data.
 
 ```{r}
-
+M3 = factor(cycle(milk_time))
+M3
+trend3 = time(milk_time)-1969
+reg1    = lm(log(air_time)~ 0 + trend1 + M, na.action=NULL)
+summary(reg1)
+model.matrix(reg1) #trend is time centered at 1969
 ```
 
