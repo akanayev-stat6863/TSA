@@ -141,4 +141,5 @@ air_time
 
 milk=read.csv("C:\\Users\\Azamat\\Downloads\\milk.csv")
 length(milk$Prod)
-
+milk_time=ts(data=milk$Prod, frequency=12, start=c(1962, 1))
+plot(milk_time)
